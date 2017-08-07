@@ -1,0 +1,27 @@
+{
+    "name": "royfj/wxBizMsgCrypt",
+    "type": "library",
+    "description": "WeChat BizMsgCrypt library",
+    "version": "0.0.1",
+    "homepage": "https://open.weixin.qq.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Li Guanghui",
+            "email": "liguanghui2006@163.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+
+
+    "autoload": {
+
+        "files": [
+            "src/wxBizMsgCrypt.php"
+        ]
+
+    }
+
+}
