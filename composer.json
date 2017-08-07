@@ -1,5 +1,5 @@
 {
-    "name": "royfj/wxBizMsgCrypt",
+    "name": "royfj/wx-biz-msg-crypt",
     "type": "library",
     "description": "WeChat BizMsgCrypt library",
     "version": "0.0.1",
