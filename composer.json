@@ -2,7 +2,7 @@
     "name": "royfj/wx-biz-msg-crypt",
     "type": "library",
     "description": "WeChat BizMsgCrypt library",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "homepage": "https://open.weixin.qq.com",
     "license": "MIT",
     "authors": [
