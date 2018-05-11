@@ -60,12 +60,17 @@ class Prpcrypt
 {
 	public $key;
 
-	function Prpcrypt($k)
-	{
-		$this->key = base64_decode($k . "=");
-	}
+//	function Prpcrypt($k)
+//	{
+//		$this->key = base64_decode($k . "=");
+//	}
 
-	/**
+	public function __construct($k)
+    {
+        $this->key = base64_decode($k . "=");
+    }
+
+    /**
 	 * 对明文进行加密
 	 * @param string $text 需要加密的明文
 	 * @return string 加密后的密文
