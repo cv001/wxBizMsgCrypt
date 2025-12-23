@@ -39,7 +39,7 @@ class WXBizMsgCrypt
     *@param sReplyEchoStr: 解密之后的echostr，当return返回0时有效
     *@return：成功0，失败返回对应的错误码
 	*/
-    public function VerifyURL($sMsgSignature, $sTimeStamp, $sNonce, $sEchoStr, &$sReplyEchoStr)
+    public function VerifyURL($sMsgSignature, $sTimeStamp, $sNonce = null, $sEchoStr = null, &$sReplyEchoStr = null)
     {
         if (strlen($this->m_sEncodingAesKey) != 43) {
             return ErrorCode::$IllegalAesKey;
@@ -119,7 +119,7 @@ class WXBizMsgCrypt
      * @param $postData string 密文，对应POST请求的数据
      * @param &$msg string 解密后的原文，当return返回0时有效
      *
-     * @return int 成功0，失败返回对应的错误码
+     * @return int|string 成功0，失败返回对应的错误码
      */
     public function DecryptMsg($sMsgSignature, $sTimeStamp = null, $sNonce = null, $sPostData = null, &$sMsg = null)
     {

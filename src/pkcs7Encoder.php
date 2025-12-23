@@ -36,7 +36,7 @@ class PKCS7Encoder
 
 	/**
 	 * 对解密后的明文进行补位删除
-	 * @param decrypted 解密后的明文
+	 * @param string decrypted 解密后的明文
 	 * @return 删除填充补位后的明文
 	 */
 	function decode($text)
@@ -73,9 +73,9 @@ class Prpcrypt
     /**
 	 * 对明文进行加密
 	 * @param string $text 需要加密的明文
-	 * @return string 加密后的密文
+	 * @return array 加密后的密文
 	 */
-	public function encrypt($text, $appid)
+	public function encryptOld($text, $appid)
 	{
 
 		try {
@@ -109,7 +109,7 @@ class Prpcrypt
 	 * @param string $encrypted 需要解密的密文
 	 * @return string 解密得到的明文
 	 */
-	public function decrypt($encrypted, $appid)
+	public function decryptOld($encrypted, $appid)
 	{
 
 		try {
@@ -167,6 +167,47 @@ class Prpcrypt
 		return $str;
 	}
 
+	public function encrypt($text, $appid)
+	{
+		$random = $this->getRandomStr();
+		$text = $random . pack('N', strlen($text)) . $text . $appid;
+		$iv = substr($this->key, 0, 16);
+		$pkc_encoder = new PKCS7Encoder;
+		$text = $pkc_encoder->encode($text);
+		$encrypted = openssl_encrypt($text, 'AES-256-CBC', $this->key, OPENSSL_RAW_DATA|OPENSSL_ZERO_PADDING, $iv);
+		return [
+			ErrorCode::$OK,
+			base64_encode($encrypted)
+		];
+	}
+
+	public function decrypt($encrypted, $appid)
+	{
+		try {
+			$ciphertext_dec = base64_decode($encrypted);
+			$iv = substr($this->key, 0, 16);
+			$decrypted = openssl_decrypt($ciphertext_dec, 'AES-256-CBC', $this->key, OPENSSL_RAW_DATA|OPENSSL_ZERO_PADDING, $iv);
+			//去除补位字符
+			$pkc_encoder = new PKCS7Encoder;
+			$result = $pkc_encoder->decode($decrypted);
+			//去除16位随机字符串,网络字节序和AppId
+			if (strlen($result) < 16)
+				return "";
+			$content = substr($result, 16, strlen($result));
+			$len_list = unpack("N", substr($content, 0, 4));
+			$xml_len = $len_list[1];
+			$xml_content = substr($content, 4, $xml_len);
+			$from_appid = substr($content, $xml_len + 4);
+			if ($from_appid != $appid) {
+				return [ErrorCode::$ValidateAppidError, null];
+			}
+			return [ErrorCode::$OK, $xml_content];
+		}
+		catch (Exception $e) {
+			return [ErrorCode::$IllegalBuffer, null];
+		}
+		
+	}
 }
 
 ?>
